@@ -1,17 +1,19 @@
-import Event from 'events';
+import Event from 'events'
+
 export default class SocketClient {
     #serverConnection = {}
     #serverListener = new Event()
+
     constructor({ host, port, protocol }) {
-        this.host = host;
-        this.port = port;
-        this.protocol = protocol;
+        this.host = host
+        this.port = port
+        this.protocol = protocol
     }
 
     sendMessage(event, message) {
         this.#serverConnection.write(JSON.stringify({ event, message }))
     }
-    
+
     attachEvents(events) {
         this.#serverConnection.on('data', data => {
             try {
@@ -53,27 +55,17 @@ export default class SocketClient {
             }
         }
 
-        const http = await import(this.protocol);
-        const req = http.request(options);
-        req.end();
+        const http = await import(this.protocol)
+        const req = http.request(options)
+        req.end()
 
         return new Promise(resolve => {
-            req.once('upgrade', (req, socket) => resolve(socket))
-        });
-
-        // req.on('upgrade', (req, socket) => {
-        //     socket.on('data', data => {
-        //         console.log('client received', data.toString());
-        //     });
-
-        //     setInterval(() => {
-        //         socket.write("hello")
-        //     }, 500);
-        // });
+            req.once('upgrade', (res, socket) => resolve(socket))
+        })
     }
 
     async initialize() {
-        this.#serverConnection = await this.createConnection();
-        console.log('i connected to the server!!');
+        this.#serverConnection = await this.createConnection()
+        console.log('I connected to the server!!')
     }
 }
